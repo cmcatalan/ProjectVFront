@@ -1,18 +1,39 @@
-html {
-  font-size: 14px;
+html, body {
+    height:100%;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.login-container {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 160px;
+  height: 100%
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.form-login{
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
 }
 
-body {
-  margin-bottom: 60px;
+.btn-sign {
+  color: #fff;
+  background-color: #56e97c;
+  border-color: #56e97c;
+}
+
+.btn-sign:hover {
+  color: #fff;
+  background-color: #44c365;
+  border-color: #44c365;
+}
+
+.sign-link {
+  color: #56e97c;
+  text-decoration: none;
+}
+
+.sign-link:hover {
+  color: #44c365;
 }
