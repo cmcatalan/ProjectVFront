@@ -1,0 +1,43 @@
+﻿@model SignUpViewModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="login-container">
+    <main class="form-login">
+        <div class="text-center">
+            <img style="width:50px;" class="mb-3" alt="logo" src="img/logo.png" />
+            <h1 class="h5 mb-3 fw-normal">I Get Money</h1>
+        </div>
+        <form asp-action="SignUp" method="post">
+            <div class="mb-3">
+                @Html.EditorFor(model => model.UserName, new {htmlAttributes = new {@class = "form-control",placeholder="Username", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.FirstName, new {htmlAttributes = new {@class = "form-control",placeholder="First Name", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.LastName, new {htmlAttributes = new {@class = "form-control",placeholder="Last Name", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.Email, new {htmlAttributes = new {@class = "form-control",placeholder="Email", required=true, type="email"}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.Password, new {htmlAttributes = new {@class = "form-control",placeholder="Password", required=true, type="password"}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.ConfirmPassword, new {htmlAttributes = new {@class = "form-control",placeholder="Confirm password", required=true, type="password"}})
+            </div>
+            <button class="w-100 btn btn-lg btn-sign" type="submit">Sign Up</button>
+        </form>
+        <hr />
+        <div class="d-flex flex-row justify-content-between">
+            <div class="p-2">
+                <p>Already have an account?</p>
+            </div>
+            <div class="p-2">
+                <a class="sign-link" asp-controller="Auth" asp-action="Login">Log In</a>
+            </div>
+        </div>
+    </main>
+</div>

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectVFront", "ProjectVFront.csproj", "{6352A23A-D100-4E66-8173-F4464F493956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectVFront", "ProjectVFront.csproj", "{6352A23A-D100-4E66-8173-F4464F493956}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Application Layer", "2. Application Layer", "{98245886-6419-4FA5-804D-8C258F7F8943}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Web client Layer", "1. Web client Layer", "{F1645683-8E87-42D1-BA74-5843F0502BE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +22,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6352A23A-D100-4E66-8173-F4464F493956} = {F1645683-8E87-42D1-BA74-5843F0502BE0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43E54552-DF18-4ECC-87A0-D735F6CC7797}
