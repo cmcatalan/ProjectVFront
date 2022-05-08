@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjectVFront.Models;
-using ProjectVFront.Models.Api;
+using ProjectVFront.WebClient.ViewModels;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 

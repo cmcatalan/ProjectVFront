@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjectVFront.Models;
+using ProjectVFront.WebClient.ViewModels;
 using System.Diagnostics;
 
 namespace ProjectVFront.Controllers

@@ -17,4 +17,9 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectVFront.Application.Services\ProjectVFront.Application.Services.csproj" />
+    <ProjectReference Include="..\ProjectVFront.WebClient.ViewModels\ProjectVFront.WebClient.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
