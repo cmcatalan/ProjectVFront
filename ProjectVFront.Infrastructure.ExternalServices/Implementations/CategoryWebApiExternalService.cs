@@ -1,4 +1,5 @@
-﻿using Flurl.Http.Configuration;
+﻿using Flurl.Http;
+using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using ProjectVFront.Crosscutting.Dtos;
@@ -17,28 +18,36 @@ public class CategoryWebApiExternalService : WebApiExternalServiceBase, ICategor
         _categoriesWebApiOptions = categoriesWebApiOptions.Value;
     }
 
-    public async Task<CategoryDto> CreateCategoryAsync(AddCategoryRequestDto dto, string userId)
+    public async Task<CategoryDto> GetCategoryAsync(int categoryId)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_categoriesWebApiOptions.CategoriesRoute, _categoriesWebApiOptions.CategoriesGetAction, categoryId)
+            .GetJsonAsync<CategoryDto>();
     }
 
-    public async Task<CategoryDto> DeleteCategoryAsync(int categoryId, string userId)
+    public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_categoriesWebApiOptions.CategoriesRoute, _categoriesWebApiOptions.CategoriesGetAllAction)
+            .GetJsonAsync<IEnumerable<CategoryDto>>();
     }
 
-    public async Task<CategoryDto> EditCategoryAsync(EditCategoryRequestDto dto, string userId)
+    public async Task<CategoryDto> CreateCategoryAsync(AddCategoryRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_categoriesWebApiOptions.CategoriesRoute, _categoriesWebApiOptions.CategoriesAddAction)
+            .PostJsonAsync(dto)
+            .ReceiveJson<CategoryDto>();
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync(string userId)
+    public async Task<CategoryDto> EditCategoryAsync(EditCategoryRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_categoriesWebApiOptions.CategoriesRoute, _categoriesWebApiOptions.CategoriesEditAction)
+           .PutJsonAsync(dto)
+           .ReceiveJson<CategoryDto>();
     }
 
-    public async Task<CategoryDto> GetCategoryAsync(int categoryId, string userId)
+    public async Task<CategoryDto> DeleteCategoryAsync(int categoryId)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_categoriesWebApiOptions.CategoriesRoute, _categoriesWebApiOptions.CategoriesDeleteAction, categoryId)
+           .DeleteAsync()
+           .ReceiveJson<CategoryDto>();
     }
 }

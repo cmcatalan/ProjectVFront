@@ -8,12 +8,11 @@ public static class IoC
 {
     public static IServiceCollection AddExternalDependencies(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(GlobalAppAutomapperProfile));
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>();
 
-        services.AddTransient<ICategoryWebApiExternalService, CategoryWebApiExternalService>();
+        services.AddTransient<IUserManagementWebApiExternalService, UserManagementWebApiExternalService>();
         services.AddTransient<ITransactionWebApiExternalService, TransactionWebApiExternalService>();
         services.AddTransient<ICategoryWebApiExternalService, CategoryWebApiExternalService>();
 

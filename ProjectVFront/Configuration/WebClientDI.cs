@@ -6,9 +6,9 @@ namespace ProjectVFront.Configuration
     {
         public static IServiceCollection AddServicesDependencies(this IServiceCollection services)
         {
-            services.AddTransient<IUserManagementService, IUserManagementService>();
-            services.AddTransient<ICategoryService, ICategoryService>();
-            services.AddTransient<ITransactionService, ITransactionService>();
+            services.AddTransient<IUserManagementService, UserManagementService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ITransactionService, TransactionService>();
 
             return services;
         }

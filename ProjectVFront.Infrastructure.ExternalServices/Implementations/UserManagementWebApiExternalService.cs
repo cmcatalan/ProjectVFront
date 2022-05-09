@@ -1,4 +1,5 @@
-﻿using Flurl.Http.Configuration;
+﻿using Flurl.Http;
+using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using ProjectVFront.Crosscutting.Dtos;
@@ -9,6 +10,7 @@ public class UserManagementWebApiExternalService : WebApiExternalServiceBase, IU
 {
     private readonly UsersWebApiOptions _usersWebApiOptions;
     private readonly AuthWebApiOptions _authWebApiOptions;
+
     public UserManagementWebApiExternalService(
         IFlurlClientFactory flurlClientFactory,
         IHttpContextAccessor httpContextAccessor,
@@ -19,23 +21,33 @@ public class UserManagementWebApiExternalService : WebApiExternalServiceBase, IU
         _usersWebApiOptions = userWebApiOptions.Value;
         _authWebApiOptions = authWebApiOptions.Value;
     }
-    public async Task<UserDto> GetUserInfoAsync(string userId)
-    {
-        throw new NotImplementedException();
-    }
 
-    public async Task<string> LoginAsync(string username, string password)
+    public async Task<string> LoginAsync(LogInRequestDto dto)
     {
-        throw new NotImplementedException();
+        var response = await _flurlClient.Request(_authWebApiOptions.AuthRoute, _authWebApiOptions.AuthLoginAction)
+                        .PostJsonAsync(dto)
+                        .ReceiveJson<LoginResponseDto>();
+
+        return response.AccessToken;
     }
 
     public async Task<UserDto> SignUpAsync(SignUpRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_authWebApiOptions.AuthRoute, _authWebApiOptions.AuthSignupAction)
+            .PostJsonAsync(dto)
+            .ReceiveJson<UserDto>();
     }
 
-    public async Task<UserDto> UpdateUserInfoAsync(EditUserRequestDto dto, string id)
+    public async Task<UserDto> GetUserInfoAsync()
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_usersWebApiOptions.UsersRoute, _usersWebApiOptions.UsersGetUserInfoAction)
+            .GetJsonAsync<UserDto>();
+    }
+
+    public async Task<UserDto> UpdateUserInfoAsync(EditUserRequestDto dto)
+    {
+        return await _flurlClient.Request(_usersWebApiOptions.UsersRoute, _usersWebApiOptions.UsersUpdateUserInfoAction)
+            .PutJsonAsync(dto)
+            .ReceiveJson<UserDto>();
     }
 }

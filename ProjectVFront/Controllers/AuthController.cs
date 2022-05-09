@@ -1,20 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ProjectVFront.Application.Services;
+using ProjectVFront.Crosscutting.Dtos;
+using ProjectVFront.Crosscutting.Utils;
 using ProjectVFront.WebClient.ViewModels;
 using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
 
 namespace ProjectVFront.Controllers
 {
     public class AuthController : Controller
     {
         private readonly ILogger<AuthController> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly IUserManagementService _userManagement;
+        private readonly IMapper _mapper;
 
-        public AuthController(ILogger<AuthController> logger, IConfiguration configuration)
+        public AuthController(ILogger<AuthController> logger, IUserManagementService userManagement, IMapper mapper)
         {
             _logger = logger;
-            _configuration = configuration;
+            _userManagement = userManagement;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -24,58 +29,68 @@ namespace ProjectVFront.Controllers
 
         [HttpGet]
         [Route("{action}")]
+        [AllowAnonymous]
         public IActionResult Login()
         {
-            return View();
-        }
+            if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Summary");
 
-        [HttpGet]
-        [Route("{action}")]
-        public IActionResult SignUp()
-        {
             return View();
         }
 
 
         [HttpPost]
         [Route("{action}")]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LogInViewModel request)
+        {
+            var dto = _mapper.Map<LogInRequestDto>(request);
+
+            var tokenResponse = await _userManagement.LoginAsync(dto);
+
+            var cookieOptions = new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict };
+
+            Response.Cookies.Append(HttpConstants.XAccessToken, tokenResponse, cookieOptions);
+
+            return RedirectToAction("Index", "Summary");
+        }
+
+        [HttpGet]
+        [Route("{action}")]
+        [AllowAnonymous]
+        public IActionResult SignUp()
+        {
+            if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Summary");
+
+            return View();
+        }
+
+
+        [HttpPost]
+        [Route("{action}")]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignUpViewModel request)
         {
-            //todo validations
+            var dto = _mapper.Map<SignUpRequestDto>(request);
+            var user = await _userManagement.SignUpAsync(dto);
 
-            var toSend = new
-            {
-                userName = request.UserName,
-                firstName = request.FirstName,
-                lastName = request.LastName,
-                email = request.Email,
-                password = request.Password
-            };
+            if (user == null)
+                throw new Exception();
 
-            try
-            {
-                string json = JsonSerializer.Serialize(toSend);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
+            return RedirectToAction("Login");
+        }
 
-                using (var client = new HttpClient()) //todo factory httpclient
-                {
+        [HttpGet]
+        [Route("{action}")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            Response.Cookies.Append(HttpConstants.XAccessToken, string.Empty);
 
-                    //client.BaseAddress = new Uri("https://localhost:7162/");
-
-                    var response = await client.PostAsync("https://localhost:7162/api/auth/signup", data);
-                    response.EnsureSuccessStatusCode();
-
-                    var result = await response.Content.ReadAsStringAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error post to backend", ex);
-            }
-
-
-            return View();
+            return RedirectToAction("Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

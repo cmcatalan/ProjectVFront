@@ -3,9 +3,9 @@
 namespace ProjectVFront.Application.Services;
 public interface ICategoryService
 {
-    Task<CategoryDto> CreateCategoryAsync(AddCategoryRequestDto dto, string userId);
-    Task<CategoryDto> GetCategoryAsync(int categoryId, string userId);
-    Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync(string userId);
-    Task<CategoryDto> EditCategoryAsync(EditCategoryRequestDto dto, string userId);
-    Task<CategoryDto> DeleteCategoryAsync(int categoryId, string userId);
+    Task<CategoryDto> CreateCategoryAsync(AddCategoryRequestDto dto);
+    Task<CategoryDto> GetCategoryAsync(int categoryId);
+    Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
+    Task<CategoryDto> EditCategoryAsync(EditCategoryRequestDto dto);
+    Task<CategoryDto> DeleteCategoryAsync(int categoryId);
 }

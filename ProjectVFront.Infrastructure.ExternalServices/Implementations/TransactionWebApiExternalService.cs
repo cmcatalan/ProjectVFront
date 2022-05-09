@@ -1,4 +1,5 @@
-﻿using Flurl.Http.Configuration;
+﻿using Flurl.Http;
+using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using ProjectVFront.Crosscutting.Dtos;
@@ -16,33 +17,41 @@ public class TransactionWebApiExternalService : WebApiExternalServiceBase, ITran
     {
         _transactionsWebApiOptions = transactionsWebApiOptions.Value;
     }
-    public async Task<TransactionDto> Add(string userId, AddTransactionRequestDto dto)
+    public async Task<IEnumerable<TransactionCategoryDto>> GetAllTransactionsWithCategoryInfo(GetTransactionsRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetAction)
+            .GetJsonAsync<IEnumerable<TransactionCategoryDto>>();
     }
 
-    public async Task<TransactionDto> Delete(string userId, int transactionId)
+    public async Task<TransactionsSummaryDto> GetSummary(GetTransactionsSummaryRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetSummaryAction)
+           .GetJsonAsync<TransactionsSummaryDto>();
     }
 
-    public async Task<TransactionDto> Edit(string userId, EditTransactionRequestDto dto)
+    public async Task<IEnumerable<TransactionsSumGroupByCategoryDto>> GetTransactionsSumGroupByCategory(GetTransactionsRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetTransactionsSumGroupByCategoryAction)
+            .GetJsonAsync<IEnumerable<TransactionsSumGroupByCategoryDto>>();
+    }
+    public async Task<TransactionDto> Add(AddTransactionRequestDto dto)
+    {
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsAddAction)
+            .PostJsonAsync(dto)
+            .ReceiveJson<TransactionDto>();
     }
 
-    public async Task<IEnumerable<TransactionCategoryDto>> GetAllTransactionsWithCategoryInfo(string userId, GetTransactionsRequestDto dto)
+    public async Task<TransactionDto> Edit(EditTransactionRequestDto dto)
     {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsEditAction)
+            .PutJsonAsync(dto)
+            .ReceiveJson<TransactionDto>();
     }
 
-    public async Task<TransactionsSummaryDto> GetSummary(string userId, GetTransactionsSummaryRequestDto dto)
+    public async Task<TransactionDto> Delete(int transactionId)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<TransactionsSumGroupByCategoryDto>> GetTransactionsSumGroupByCategory(string userId, GetTransactionsRequestDto dto)
-    {
-        throw new NotImplementedException();
+        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsDeleteAction, transactionId)
+            .DeleteAsync()
+            .ReceiveJson<TransactionDto>();
     }
 }

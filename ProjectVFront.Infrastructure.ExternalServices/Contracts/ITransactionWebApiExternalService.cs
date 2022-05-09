@@ -3,10 +3,10 @@
 namespace ProjectVFront.Infrastructure.ExternalServices;
 public interface ITransactionWebApiExternalService
 {
-    Task<IEnumerable<TransactionCategoryDto>> GetAllTransactionsWithCategoryInfo(string userId, GetTransactionsRequestDto dto);
-    Task<TransactionsSummaryDto> GetSummary(string userId, GetTransactionsSummaryRequestDto dto);
-    Task<IEnumerable<TransactionsSumGroupByCategoryDto>> GetTransactionsSumGroupByCategory(string userId, GetTransactionsRequestDto dto);
-    Task<TransactionDto> Add(string userId, AddTransactionRequestDto dto);
-    Task<TransactionDto> Edit(string userId, EditTransactionRequestDto dto);
-    Task<TransactionDto> Delete(string userId, int transactionId);
+    Task<IEnumerable<TransactionCategoryDto>> GetAllTransactionsWithCategoryInfo(GetTransactionsRequestDto dto);
+    Task<TransactionsSummaryDto> GetSummary(GetTransactionsSummaryRequestDto dto);
+    Task<IEnumerable<TransactionsSumGroupByCategoryDto>> GetTransactionsSumGroupByCategory(GetTransactionsRequestDto dto);
+    Task<TransactionDto> Add(AddTransactionRequestDto dto);
+    Task<TransactionDto> Edit(EditTransactionRequestDto dto);
+    Task<TransactionDto> Delete(int transactionId);
 }

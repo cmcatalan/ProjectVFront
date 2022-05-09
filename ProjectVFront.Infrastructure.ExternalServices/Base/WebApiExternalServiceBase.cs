@@ -1,4 +1,5 @@
-﻿using Flurl.Http;
+﻿using Flurl;
+using Flurl.Http;
 using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -17,9 +18,9 @@ public class WebApiExternalServiceBase
         _httpContextAccessor = httpContextAccessor;
 
         var baseUri = new Uri(_baseWebApiConfiguration.BaseUrl);
-        var baseUriWithVersion = new Uri(baseUri, _baseWebApiConfiguration.ApiVersion);
+        var url = baseUri.AppendPathSegment(_baseWebApiConfiguration.ApiVersion);
 
-        _flurlClient = flurlClientFactory.Get(baseUriWithVersion);
+        _flurlClient = flurlClientFactory.Get(url);
 
         _flurlClient.BeforeCall(flurlCall =>
         {
