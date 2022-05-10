@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjectVFront.Models;
+using ProjectVFront.WebClient.ViewModels;
 using System.Diagnostics;
 
 namespace ProjectVFront.Controllers
@@ -15,12 +15,7 @@ namespace ProjectVFront.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            return Redirect("login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

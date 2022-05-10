@@ -1,0 +1,31 @@
+﻿@model LogInViewModel
+@{
+    ViewData["Title"] = "Log In";
+}
+
+<div class="login-container">
+    <main class="form-login">
+        <div class="text-center">
+            <img style="width:50px;" class="mb-3" alt="logo" src="img/logo.png" />
+            <h1 class="h5 mb-3 fw-normal">I Get Money</h1>
+        </div>
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                @Html.EditorFor(model => model.UserName, new {htmlAttributes = new {@class = "form-control",placeholder="Username", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.Password, new {htmlAttributes = new {@class = "form-control",placeholder="Password", required=true, type="password"}})
+            </div>
+            <button class="w-100 btn btn-lg btn-sign" type="submit">Log In</button>
+        </form>
+        <hr />
+        <div class="d-flex flex-row justify-content-between">
+            <div class="p-2">
+                <p>New to I Get Money?</p>
+            </div>
+            <div class="p-2">
+                <a class="sign-link" asp-controller="Auth" asp-action="SignUp">Sign Up</a>
+            </div>
+        </div>
+    </main>
+</div>
