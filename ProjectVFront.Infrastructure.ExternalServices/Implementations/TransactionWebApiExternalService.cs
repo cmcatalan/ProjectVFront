@@ -19,20 +19,48 @@ public class TransactionWebApiExternalService : WebApiExternalServiceBase, ITran
     }
     public async Task<IEnumerable<TransactionCategoryDto>> GetAllTransactionsWithCategoryInfo(GetTransactionsRequestDto dto)
     {
-        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetAction)
-            .GetJsonAsync<IEnumerable<TransactionCategoryDto>>();
+        var request = _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetAction);
+
+        if (dto.From != null)
+            request.SetQueryParam("From", dto.From);
+
+        if (dto.To != null)
+            request.SetQueryParam("To", dto.To);
+
+        if (dto.CategoryType != null)
+            request.SetQueryParam("CategoryType", dto.CategoryType);
+
+        return await request.GetJsonAsync<IEnumerable<TransactionCategoryDto>>();
+
     }
 
     public async Task<TransactionsSummaryDto> GetSummary(GetTransactionsSummaryRequestDto dto)
     {
-        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetSummaryAction)
-           .GetJsonAsync<TransactionsSummaryDto>();
+        var request = _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetSummaryAction);
+
+        if (dto.From != null)
+            request.SetQueryParam("From", dto.From);
+
+        if (dto.To != null)
+            request.SetQueryParam("To", dto.To);
+
+        return await request.GetJsonAsync<TransactionsSummaryDto>();
     }
 
     public async Task<IEnumerable<TransactionsSumGroupByCategoryDto>> GetTransactionsSumGroupByCategory(GetTransactionsRequestDto dto)
     {
-        return await _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetTransactionsSumGroupByCategoryAction)
-            .GetJsonAsync<IEnumerable<TransactionsSumGroupByCategoryDto>>();
+        var request = _flurlClient.Request(_transactionsWebApiOptions.TransactionsRoute, _transactionsWebApiOptions.TransactionsGetTransactionsSumGroupByCategoryAction);
+
+        if (dto.From != null)
+            request.SetQueryParam("From", dto.From);
+
+        if (dto.To != null)
+            request.SetQueryParam("To", dto.To);
+
+        if (dto.CategoryType != null)
+            request.SetQueryParam("CategoryType", dto.CategoryType);
+
+        return await request.GetJsonAsync<IEnumerable<TransactionsSumGroupByCategoryDto>>();
     }
     public async Task<TransactionDto> Add(AddTransactionRequestDto dto)
     {

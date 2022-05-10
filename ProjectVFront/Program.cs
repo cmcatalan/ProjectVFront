@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ProjectVFront.Crosscutting.Utils;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(GlobalAppAutomapperProfile));
 builder.Services.AddExternalDependencies();
 builder.Services.AddServicesDependencies();
+builder.Services.AddSingleton<IFormatProvider>(new CultureInfo("en-US"));
 builder.Services.AddOptions(builder.Configuration);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>

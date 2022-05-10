@@ -6,19 +6,32 @@
 
 <div class="container-fluid">
     <div class="text-center py-1 bg-white">
-        <span>←</span> <span class="text-capitalize">@Html.Raw(ViewBag.Month)</span> <span>→</span>
+        <div class="mb-1">
+            @ViewBag.Year
+        </div>
+        <div class="fs-4">
+            <a class="text-decoration-none" asp-action="Index"
+               asp-controller="Summary"
+               asp-route-month=@ViewBag.BeforeMonth
+               asp-route-year=@ViewBag.BeforeYear><span>←</span></a>
+            <span class="text-capitalize">@ViewBag.Month</span>
+            <a class="text-decoration-none" asp-action="Index"
+               asp-controller="Summary"
+               asp-route-month=@ViewBag.AfterMonth
+               asp-route-year=@ViewBag.AfterYear><span>→</span></a>
+        </div>
     </div>
     <main role="main" class="pb-3">
-        <div class="card shadow p-3 my-1 bg-white rounded border-0 mb-4">
+        <div class="card shadow-sm bg-white p-3 my-1 rounded border-0 mb-4">
             <div class="card-body ">
                 <div class="row">
-                    <div class="col-lg-4 d-flex estado my-3">
+                    <div class="col-lg-4 d-flex estado my-3 border-end border-primary">
                         <div class="mx-auto text-center">
                             <h1 class="text-dark fs-4">Incomes</h1>
                             <span id="incomes" class="text-success">@Html.Raw(ViewBag.Summary.incomes)€</span>
                         </div>
                     </div>
-                    <div class="col-lg-4 d-flex estado my-3">
+                    <div class="col-lg-4 d-flex estado my-3 border-end border-primary">
                         <div class="mx-auto text-center">
                             <h1 class="text-dark fs-4">Expenses</h1>
                             <span id="expenses" class="text-danger">@Html.Raw(ViewBag.Summary.expenses)€</span>
@@ -27,16 +40,31 @@
                     <div class="col-lg-4 d-flex my-3">
                         <div class="mx-auto text-center">
                             <h1 class="font-weight-bold text-dark fs-4">Total</h1>
-                            <span id="total" class="text-dark">@Html.Raw(ViewBag.Summary.total)€</span>
+                            @if (ViewBag.Summary.totalValue > 0)
+                            {
+                                <span id="total" class="text-success">@Html.Raw(ViewBag.Summary.total)€</span>
+                            }
+                            else if (ViewBag.Summary.totalValue < 0)
+                            {
+                                <span id="total" class="text-danger">@Html.Raw(ViewBag.Summary.total)€</span>
+                            }
+                            else
+                            {
+                                <span id="total" class="text-dark">@Html.Raw(ViewBag.Summary.total)€</span>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card shadow p-3 my-1 bg-white rounded border-0">
+        <div class="p-3 my-1 bg-white rounded border-0">
             <div class="card-body ">
-                <canvas id="summaryChart" style="display: block; box-sizing: border-box;max-width:600px;margin: 0 auto;" class="w-100"></canvas>
+                <canvas id="summaryChart" style="display: block; box-sizing: border-box;max-width:700px;margin: 0 auto;" class="w-100"></canvas>
             </div>
+        </div>
+        <div class="p-3 my-1 bg-white rounded border-0 d-flex flex-row justify-content-center">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addIncomeModal" class="btn btn-outline-success p-1 rounded-circle me-5" style="width: 50px; height:50px;">+</button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addExpenseModal" class="btn btn-outline-danger p-1 rounded-circle" style="width: 50px; height:50px;">-</button>
         </div>
     </main>
 </div>
@@ -49,26 +77,15 @@
       const myChart = new Chart(ctx, {
           type: 'bar',
           data: {
-              labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+              labels: @Html.Raw(ViewBag.TransactionsSumLabels),
               datasets: [{
-                  label: 'Transactions summary',
-                  data: [12, 19, 3, 5, 2, 3],
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255, 99, 132, 1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  barPercentage: 0.1,
+                  barThickness: 30,
+                  maxBarThickness: 32,
+                  label: 'Categories',
+                  data: @Html.Raw(ViewBag.TransactionsSumData),
+                  backgroundColor: @Html.Raw(ViewBag.BackgroundColors),
+                  borderColor: @Html.Raw(ViewBag.BorderColors),
                   borderWidth: 1
               }]
           },options: {
@@ -78,3 +95,38 @@
 </script>
 }
 
+<div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+                @Html.PartialAsync("AddIncomeTransaction")
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+                @Html.PartialAsync("AddExpenseTransaction")
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
