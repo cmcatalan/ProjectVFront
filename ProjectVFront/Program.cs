@@ -16,6 +16,11 @@ builder.Services.AddExternalDependencies();
 builder.Services.AddServicesDependencies();
 builder.Services.AddSingleton<IFormatProvider>(new CultureInfo("en-US"));
 builder.Services.AddOptions(builder.Configuration);
+
+var jwtIssuer = Environment.GetEnvironmentVariable("JwtIssuer");
+var jwtAudience = Environment.GetEnvironmentVariable("JwtAudience");
+var jwtKey = Environment.GetEnvironmentVariable("JwtKey");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -25,9 +30,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                ValidIssuer = jwtIssuer,
+                ValidAudience = jwtAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
             };
             options.Events = new JwtBearerEvents
             {
