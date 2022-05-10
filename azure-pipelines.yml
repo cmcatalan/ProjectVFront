@@ -1,0 +1,53 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    version: '6.0.x'
+    includePreviewVersions: true
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+
+- script: |
+    sudo apt update
+    sudo apt install snapd
+    curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+    sudo snap install heroku --classic
+  displayName: 'i heroku cli'
+
+- script: |
+    echo CONTAINER LOGIN
+    heroku container:login
+    echo PUSH
+    heroku container:push -a $HEROKU_APP_NAME web
+    echo RELEASE
+    heroku container:release -a $HEROKU_APP_NAME web
+  displayName: 'heroku push'
+  env:
+    HEROKU_API_KEY: $(HEROKU_API_KEY)
+    HEROKU_APP_NAME: $(HEROKU_APP_NAME)
