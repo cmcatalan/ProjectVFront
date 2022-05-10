@@ -10,28 +10,27 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  solution: '**/*.sln'
+  startupProject: './ProjectVFront/ProjectVFront.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
-  inputs:
-    version: '6.0.x'
-    includePreviewVersions: true
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
+    projects: $(startupProject)
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: $(startupProject)
     arguments: '--configuration $(buildConfiguration)'
   displayName: 'dotnet build $(buildConfiguration)'
+  condition: 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
+    projects: $(startupProject)
+  displayName: 'dotnet test'
 
 - script: |
     sudo apt update
