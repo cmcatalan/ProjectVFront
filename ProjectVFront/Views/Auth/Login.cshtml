@@ -1,4 +1,5 @@
-﻿@{
+﻿@model LogInViewModel
+@{
     ViewData["Title"] = "Log In";
 }
 
@@ -8,12 +9,12 @@
             <img style="width:50px;" class="mb-3" alt="logo" src="img/logo.png" />
             <h1 class="h5 mb-3 fw-normal">I Get Money</h1>
         </div>
-        <form>
+        <form asp-action="Login" method="post">
             <div class="mb-3">
-                <input type="email" class="form-control" id="login-email" placeholder="Email">
+                @Html.EditorFor(model => model.UserName, new {htmlAttributes = new {@class = "form-control",placeholder="Username", required=true}})
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" id="login-password" placeholder="Password">
+                @Html.EditorFor(model => model.Password, new {htmlAttributes = new {@class = "form-control",placeholder="Password", required=true, type="password"}})
             </div>
             <button class="w-100 btn btn-lg btn-sign" type="submit">Log In</button>
         </form>
