@@ -1,0 +1,32 @@
+﻿@model EditUserViewModel
+@{
+    Layout = "_LayoutLogged";
+    ViewData["Title"] = "User info";
+}
+
+<div class="container d-flex justify-content-center">
+    <main class="card shadow-sm bg-white p-3 w-100" style="max-width:500px;">
+        <h4 class="fs-4">User info</h4>
+        <form asp-action="Edit" method="post">
+            <div class="mb-3">
+                @Html.EditorFor(model => model.FirstName, new {htmlAttributes = new {@class = "form-control",placeholder="First Name", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.LastName, new {htmlAttributes = new {@class = "form-control",placeholder="Last Name", required=true}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.OldPassword, new {htmlAttributes = new {@class = "form-control",placeholder="Password", required=true, type="password"}})
+            </div>
+            <div class="mb-3">
+                @Html.EditorFor(model => model.NewPassword, new {htmlAttributes = new {@class = "form-control",placeholder="New password", required=true, type="password"}})
+            </div>
+            <button class="w-100 btn btn-lg btn-sign" type="submit">Edit</button>
+        </form>
+    </main>
+</div>
+
+@section scripts {
+<script>
+
+</script>
+}

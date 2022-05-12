@@ -1,0 +1,111 @@
+﻿@using ProjectVFront.Crosscutting.Utils.enums
+@model CategoriesViewModel
+
+@{
+    Layout = "_LayoutLogged";
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container-fluid bg-white">
+    <main role="main" class="pb-3 container">
+        <h4 class="fs-4">Categories</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Picture</th>
+                        <th scope="col">Is default</th>
+                        <th scope="col">
+                            <button class="btn btn-sm btn-light rounded-circle p-1"
+                                    style="width:31px; height:31px;"
+                                    title="Add"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addCategoryModal">
+                                ➕
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <tr>
+                            <th scope="row">@category.Id</th>
+                            <td>@category.Name</td>
+                            <td>@category.Description</td>
+                            <td>@category.Type.ToString()</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(category.PictureUrl))
+                                {
+                                    <img alt="picture url" src="@category.PictureUrl" class="p-1 me-1" style="width:30px;" />
+                                }
+                                @category.PictureUrl
+                            </td>
+                            <td>@category.IsDefault.ToString()</td>
+                            @if (category.IsDefault)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td><button class="btn btn-sm btn-light rounded-circle p-1" style="width:31px; height:31px;" title="Edit">✏️</button></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <form asp-action="Add" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddCategoryRequestDto.Name, new {htmlAttributes = new {@class = "form-control",placeholder="Name", required=true}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddCategoryRequestDto.Description, new {htmlAttributes = new {@class = "form-control",placeholder="Description", required=true}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddCategoryRequestDto.PictureUrl, new {htmlAttributes = new {@class = "form-control",placeholder="PictureUrl", required=true}})
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="AddCategoryRequestDto.Type" asp-items="Html.GetEnumSelectList<CategoryType>()" class="form-select" aria-label="Category type" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="w-100 btn btn-sm btn-primary" type="submit">Add</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Html.PartialAsync("EditCategory")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>

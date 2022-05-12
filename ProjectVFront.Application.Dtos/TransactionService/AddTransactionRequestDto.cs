@@ -1,2 +1,8 @@
 ﻿namespace ProjectVFront.Crosscutting.Dtos;
-public record AddTransactionRequestDto(string Description, double Value, DateTime Date, int CategoryId);
+public class AddTransactionRequestDto
+{
+    public string Description { get; set; } = string.Empty;
+    public double Value { get; set; }
+    public DateTime Date { get; set; } = DateTime.Now;
+    public int CategoryId { get; set; }
+}

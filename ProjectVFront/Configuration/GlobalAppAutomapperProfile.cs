@@ -10,6 +10,8 @@ namespace ProjectVFront.WebClient.Configuration
         {
             CreateMap<SignUpViewModel, SignUpRequestDto>().ReverseMap();
             CreateMap<LogInViewModel, LogInRequestDto>().ReverseMap();
+            CreateMap<UserDto, EditUserViewModel>().ReverseMap();
+            CreateMap<EditUserRequestDto, EditUserViewModel>().ReverseMap();
         }
     }
 }

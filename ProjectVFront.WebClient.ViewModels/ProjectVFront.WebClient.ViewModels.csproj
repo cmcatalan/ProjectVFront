@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectVFront.Application.Dtos\ProjectVFront.Crosscutting.Dtos.csproj" />
+  </ItemGroup>
+
 </Project>

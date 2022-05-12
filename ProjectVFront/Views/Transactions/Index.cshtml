@@ -1,0 +1,53 @@
+﻿@using ProjectVFront.Crosscutting.Utils.enums
+@model TransactionsViewModel
+
+@{
+    Layout = "_LayoutLogged";
+    ViewData["Title"] = "Transactions";
+}
+
+<div class="container-fluid bg-white">
+    <main role="main" class="pb-3 container">
+        <h4 class="fs-4">Transactions</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Value</th>
+                        <th scope="col">Datetime</th>
+                        <th scope="col">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model.Transactions)
+                    {
+                        <tr>
+                            <td scope="row">
+                                @if (!string.IsNullOrEmpty(transaction.CategoryImageUrl))
+                                {
+                                    <img alt="picture url @transaction.TransactionId" src="@transaction.CategoryImageUrl" class="p-1 me-1" style="width:40px;" />
+                                }
+                                <span>@transaction.CategoryName</span>
+                            </td>
+                            <td>@transaction.TransactionDescription</td>
+                            <td>@transaction.TransactionValue.ToString("0.00",Model.FormatProvider)€</td>
+                            <td>@transaction.TransactionDate.ToString("dd/MM/yyyy",Model.FormatProvider)</td>
+                            <td>
+                                @if (transaction.CategoryType == CategoryType.Expense.ToString())
+                                {
+                                    <span class="badge bg-danger">@transaction.CategoryType.ToString()</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">@transaction.CategoryType.ToString()</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
