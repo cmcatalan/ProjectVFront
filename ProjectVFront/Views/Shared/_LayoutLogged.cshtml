@@ -22,11 +22,17 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @*<ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Summary" asp-action="Index">Summary</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Summary" asp-action="Index">Summary</a>
                         </li>
-                        </ul>*@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="d-flex">
                     <span class="fs-5">Hello @User?.Identity?.Name</span>
@@ -46,7 +52,7 @@
     <div>
         @RenderBody()
     </div>
-    <footer class="border-top footer text-muted mt-auto py-1 footer-light bg-white d-flex">
+    <footer class="border-top footer text-muted position-fixed bottom-0 py-1 footer-light bg-white d-flex">
         <div class="container-fluid lh-sm d-flex justify-content-between">
             <small>&copy; 2022 - I Get Money</small>
             <small>v @typeof(Program).Assembly.GetName().Version</small>

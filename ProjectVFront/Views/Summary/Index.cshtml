@@ -1,10 +1,13 @@
-﻿@{
+﻿@using ProjectVFront.Crosscutting.Utils.enums
+@model SummaryViewModel
+
+@{
     Layout = "_LayoutLogged";
     ViewData["Title"] = "Summary";
 }
 
-
-<div class="container-fluid">
+<div class="container">
+    <h4 class="fs-4 text-center">Summary</h4>
     <div class="text-center py-1 bg-white">
         <div class="mb-1">
             @ViewBag.Year
@@ -57,6 +60,27 @@
                 </div>
             </div>
         </div>
+        <div class="p-3 my-1 bg-white rounded d-flex flex-row" style="overflow:auto;white-space:nowrap;">
+            @foreach (var group in Model.TransactionsSumGroups)
+            {
+                <div class="d-flex flex-column text-black text-center w-25 shadow-sm m-1">
+                    @if (!string.IsNullOrEmpty(group.CategoryPictureUrl))
+                    {
+                        <span><img style="width:50px;" src="@group.CategoryPictureUrl" /></span>
+                    }
+                    <span>@group.CategoryName</span>
+
+                    @if (group.CategoryType == CategoryType.Expense.ToString())
+                    {
+                        <span class="badge bg-danger">-@group.TransactionsSum.ToString("0.00",Model.FormatProvider)€</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">@group.TransactionsSum.ToString("0.00",Model.FormatProvider)€</span>
+                    }
+                </div>
+            }
+        </div>
         <div class="p-3 my-1 bg-white rounded border-0">
             <div class="card-body ">
                 <canvas id="summaryChart" style="display: block; box-sizing: border-box;max-width:700px;margin: 0 auto;" class="w-100"></canvas>
@@ -96,37 +120,71 @@
 }
 
 <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-                @Html.PartialAsync("AddIncomeTransaction")
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
+    <form asp-action="AddTransaction" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Description, new {htmlAttributes = new {@class = "form-control",placeholder="Description", required=true}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Date, new {htmlAttributes = new {@class = "form-control",placeholder="Date", required=true, type="date"}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Value, new {htmlAttributes = new {@class = "form-control",placeholder="Value",type="number", required=true,step="0.01"}})
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="AddTransactionRequestDto.CategoryId" class="form-select" aria-label="Category" required>
+                            @foreach (var category in Model.Categories.Where(c => c.Type == CategoryType.Income))
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="w-100 btn btn-sm btn-primary" type="submit">Add</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-                @Html.PartialAsync("AddExpenseTransaction")
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
+    <form asp-action="AddTransaction" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Description, new {htmlAttributes = new {@class = "form-control",placeholder="Description", required=true}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Date, new {htmlAttributes = new {@class = "form-control",placeholder="Date", required=true, type="date"}})
+                    </div>
+                    <div class="mb-3">
+                        @Html.EditorFor(model => model.AddTransactionRequestDto.Value, new {htmlAttributes = new {@class = "form-control",placeholder="Value",type="number", required=true, step="0.01"}})
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="AddTransactionRequestDto.CategoryId" class="form-select" aria-label="Category" required>
+                            @foreach (var category in Model.Categories.Where(c => c.Type == CategoryType.Expense))
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="w-100 btn btn-sm btn-primary" type="submit">Add</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>

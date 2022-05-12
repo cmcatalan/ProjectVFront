@@ -86,7 +86,7 @@ namespace ProjectVFront.Controllers
         [HttpGet]
         [Route("{action}")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             Response.Cookies.Append(HttpConstants.XAccessToken, string.Empty);
 
