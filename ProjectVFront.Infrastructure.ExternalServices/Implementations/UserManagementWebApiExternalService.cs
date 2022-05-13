@@ -25,8 +25,8 @@ public class UserManagementWebApiExternalService : WebApiExternalServiceBase, IU
     public async Task<string> LoginAsync(LogInRequestDto dto)
     {
         var response = await _flurlClient.Request(_authWebApiOptions.AuthRoute, _authWebApiOptions.AuthLoginAction)
-                        .PostJsonAsync(dto)
-                        .ReceiveJson<LoginResponseDto>();
+                                .PostJsonAsync(dto)
+                                .ReceiveJson<LoginResponseDto>();
 
         return response.AccessToken;
     }
@@ -34,8 +34,8 @@ public class UserManagementWebApiExternalService : WebApiExternalServiceBase, IU
     public async Task<UserDto> SignUpAsync(SignUpRequestDto dto)
     {
         return await _flurlClient.Request(_authWebApiOptions.AuthRoute, _authWebApiOptions.AuthSignupAction)
-            .PostJsonAsync(dto)
-            .ReceiveJson<UserDto>();
+        .PostJsonAsync(dto)
+        .ReceiveJson<UserDto>();
     }
 
     public async Task<UserDto> GetUserInfoAsync()

@@ -8,6 +8,12 @@
 
 <div class="container-fluid bg-white">
     <main role="main" class="pb-3 container">
+        @if (!string.IsNullOrEmpty((string?)TempData["Error"]))
+        {
+            <div class="alert alert-danger my-2" role="alert">
+                @TempData["Error"]
+            </div>
+        }
         <h4 class="fs-4">Categories</h4>
         <div class="table-responsive">
             <table class="table">

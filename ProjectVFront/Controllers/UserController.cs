@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Flurl.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectVFront.Application.Services;
@@ -43,13 +44,23 @@ namespace ProjectVFront.Controllers
         [Route("{action}")]
         public async Task<IActionResult> Edit(EditUserViewModel viewmodel)
         {
-            var requestDto = _mapper.Map<EditUserRequestDto>(viewmodel);
+            try
+            {
+                var requestDto = _mapper.Map<EditUserRequestDto>(viewmodel);
 
-            var userDto = await _userManagement.UpdateUserInfoAsync(requestDto);
+                var userDto = await _userManagement.UpdateUserInfoAsync(requestDto);
 
-            ModelState.Clear();
+                ModelState.Clear();
 
-            viewmodel = _mapper.Map<EditUserViewModel>(userDto);
+                viewmodel = _mapper.Map<EditUserViewModel>(userDto);
+
+                return View(viewmodel);
+
+            }
+            catch (FlurlHttpException ex)
+            {
+                ViewBag.Error = await GetErrorMessageAsync(ex);
+            }
 
             return View(viewmodel);
         }
@@ -58,6 +69,17 @@ namespace ProjectVFront.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<string> GetErrorMessageAsync(FlurlHttpException ex)
+        {
+            if (ex.StatusCode == 400)
+            {
+                var httpError = await ex.GetResponseJsonAsync<HttpError>();
+                return httpError.Message;
+            }
+
+            throw ex;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Flurl.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectVFront.Application.Services;
@@ -62,6 +63,10 @@ namespace ProjectVFront.Controllers
                 ViewBag.AfterMonth = afterMonth.Month;
                 ViewBag.AfterYear = afterMonth.Year;
 
+                ViewBag.YearNum = from.Year;
+                ViewBag.MonthNum = from.Month;
+
+
                 ViewBag.Year = from.ToString("yyyy", _formatProvider);
                 ViewBag.Month = from.ToString("MMMM", _formatProvider);
                 ViewBag.Summary = new
@@ -109,6 +114,10 @@ namespace ProjectVFront.Controllers
             {
                 await _transactionService.Add(viewmodel.AddTransactionRequestDto);
             }
+            catch (FlurlHttpException ex)
+            {
+                TempData["Error"] = await GetErrorMessageAsync(ex);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
@@ -122,6 +131,17 @@ namespace ProjectVFront.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<string> GetErrorMessageAsync(FlurlHttpException ex)
+        {
+            if (ex.StatusCode == 400)
+            {
+                var httpError = await ex.GetResponseJsonAsync<HttpError>();
+                return httpError.Message;
+            }
+
+            throw ex;
         }
     }
 }

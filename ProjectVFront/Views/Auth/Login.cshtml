@@ -16,7 +16,14 @@
             <div class="mb-3">
                 @Html.EditorFor(model => model.Password, new {htmlAttributes = new {@class = "form-control",placeholder="Password", required=true, type="password"}})
             </div>
-            <button class="w-100 btn btn-lg btn-sign" type="submit">Log In</button>
+            <button class="w-100 btn btn-sm btn-sign" type="submit">Log In</button>
+
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
+            {
+                <div class="alert alert-danger my-2" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
         </form>
         <hr />
         <div class="d-flex flex-row justify-content-between">
