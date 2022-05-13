@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Flurl.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectVFront.Application.Services;
+using ProjectVFront.Crosscutting.Dtos;
 using ProjectVFront.WebClient.ViewModels;
 using System.Diagnostics;
 
@@ -36,10 +38,17 @@ namespace ProjectVFront.Controllers
             {
                 await _categoryService.CreateCategoryAsync(viewmodel.AddCategoryRequestDto);
             }
+            catch (FlurlHttpException ex)
+            {
+                _logger.LogError(ex.Message);
+                TempData["Error"] = await GetErrorMessageAsync(ex);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw ex;
             }
+
             return RedirectToAction("index");
         }
 
@@ -55,6 +64,17 @@ namespace ProjectVFront.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<string> GetErrorMessageAsync(FlurlHttpException ex)
+        {
+            if (ex.StatusCode == 400)
+            {
+                var httpError = await ex.GetResponseJsonAsync<HttpError>();
+                return httpError.Message;
+            }
+
+            throw ex;
         }
     }
 }

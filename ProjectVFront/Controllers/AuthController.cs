@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Flurl.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectVFront.Application.Services;
@@ -45,15 +46,24 @@ namespace ProjectVFront.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LogInViewModel request)
         {
-            var dto = _mapper.Map<LogInRequestDto>(request);
+            try
+            {
+                var dto = _mapper.Map<LogInRequestDto>(request);
 
-            var tokenResponse = await _userManagement.LoginAsync(dto);
+                var tokenResponse = await _userManagement.LoginAsync(dto);
 
-            var cookieOptions = new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict };
+                var cookieOptions = new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict };
 
-            Response.Cookies.Append(HttpConstants.XAccessToken, tokenResponse, cookieOptions);
+                Response.Cookies.Append(HttpConstants.XAccessToken, tokenResponse, cookieOptions);
 
-            return RedirectToAction("Index", "Summary");
+                return RedirectToAction("Index", "Summary");
+            }
+            catch (FlurlHttpException ex)
+            {
+                ViewBag.Error = await GetErrorMessageAsync(ex);
+            }
+
+            return View();
         }
 
         [HttpGet]
@@ -74,13 +84,19 @@ namespace ProjectVFront.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignUpViewModel request)
         {
-            var dto = _mapper.Map<SignUpRequestDto>(request);
-            var user = await _userManagement.SignUpAsync(dto);
+            try
+            {
+                var dto = _mapper.Map<SignUpRequestDto>(request);
+                await _userManagement.SignUpAsync(dto);
 
-            if (user == null)
-                throw new Exception();
+                return RedirectToAction("Login");
+            }
+            catch (FlurlHttpException ex)
+            {
+                ViewBag.Error = await GetErrorMessageAsync(ex);
+            }
 
-            return RedirectToAction("Login");
+            return View();
         }
 
         [HttpGet]
@@ -97,6 +113,17 @@ namespace ProjectVFront.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<string> GetErrorMessageAsync(FlurlHttpException ex)
+        {
+            if (ex.StatusCode == 400)
+            {
+                var httpError = await ex.GetResponseJsonAsync<HttpError>();
+                return httpError.Message;
+            }
+
+            throw ex;
         }
     }
 }

@@ -35,6 +35,19 @@ namespace ProjectVFront.Controllers
                 var from = new DateTime(year ?? now.Year, month ?? now.Month, 1);
                 var lastDayOfMonth = from.AddMonths(1).AddDays(-1);
                 var to = new DateTime(lastDayOfMonth.Year, lastDayOfMonth.Month, lastDayOfMonth.Day, 23, 59, 59);
+
+                var beforeMonth = from.AddMonths(-1);
+                var afterMonth = from.AddMonths(1);
+
+                ViewBag.BeforeMonth = beforeMonth.Month;
+                ViewBag.BeforeYear = beforeMonth.Year;
+
+                ViewBag.AfterMonth = afterMonth.Month;
+                ViewBag.AfterYear = afterMonth.Year;
+
+                ViewBag.Year = from.ToString("yyyy", _formatProvider);
+                ViewBag.Month = from.ToString("MMMM", _formatProvider);
+                
                 var transactionsRequest = new GetTransactionsRequestDto(from, to, null);
                 var transactionsListDto = await _transactionService.GetAllTransactionsWithCategoryInfo(transactionsRequest);
                 viewmodel.Transactions = transactionsListDto;
